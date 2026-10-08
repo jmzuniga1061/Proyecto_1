@@ -6,7 +6,7 @@ import { User } from './temporal';
 
 @Injectable()
 export class UserService {
-  private users: User[] = []; // aquí se guardan los usuarios en memoria
+  private users: User[] = []; 
 
   create(createUserDto: CreateUserDto) {
     const newUser = new User(
@@ -15,29 +15,42 @@ export class UserService {
       createUserDto.email,
     );
     this.users.push(newUser);
-    return newUser; // <-- aquí devolvemos el objeto, no un string
+    return newUser; 
   }
 
   findAll() {
     return this.users;
   }
 
-  findOne(id: number) {
-    return this.users.find(user => user.id === id);
-  }
+ findOne(id: number) {
+  const user = this.users.find(user => user.id === id);
+  return user ? user : null; // nunca devuelve 1 ni undefined
+}
+
+
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) return null;
-    this.users[index] = { ...this.users[index], ...updateUserDto };
-    return this.users[index];
-  }
+  const index = this.users.findIndex(user => user.id === id);
 
-  remove(id: number) {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) return null;
-    const deleted = this.users[index];
-    this.users.splice(index, 1);
-    return deleted;
-  }
+  if (index === -1) return null;
+
+  this.users[index] = {
+    ...this.users[index],
+    ...updateUserDto
+  };
+
+  return this.users[index];
+}
+
+ remove(id: number) {
+  const index = this.users.findIndex(user => user.id === id);
+
+  if (index === -1) return null;
+
+  const deleted = this.users[index];
+
+  this.users.splice(index, 1);
+
+  return deleted;
+}
 }
